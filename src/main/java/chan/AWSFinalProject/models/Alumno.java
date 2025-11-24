@@ -4,14 +4,11 @@ public class Alumno {
     private int id;
     private String nombres;
     private String apellidos;
+    private String matricula;
+    private double promedio;
     private int horasClase;
 
-    public Alumno(String nombres, int id, String apellidos, int horasClase) {
-        this.nombres = nombres;
-        this.id = id;
-        this.apellidos = apellidos;
-        this.horasClase = horasClase;
-    }
+
 
     public int getId() {
         return id;
@@ -35,6 +32,22 @@ public class Alumno {
 
     public void setNombres(String nombres) {
         this.nombres = nombres;
+    }
+
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+
+    public double getPromedio() {
+        return promedio;
+    }
+
+    public void setPromedio(double promedio) {
+        this.promedio = promedio;
     }
 
     public int getHorasClase() {
