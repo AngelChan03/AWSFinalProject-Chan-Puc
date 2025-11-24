@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
 public class AlumnoController {
 
     private List<Alumno> alumnos = new ArrayList<>();
@@ -35,7 +34,7 @@ public class AlumnoController {
         }
     }
 
-    // POST /alumnos - crear un alumno
+    // ✅ POST /alumnos - crear un alumno
     @PostMapping("/alumnos")
     public ResponseEntity<?> createAlumno(@RequestBody Alumno nuevoAlumno) {
         // Validaciones
@@ -54,10 +53,9 @@ public class AlumnoController {
         alumnos.add(nuevoAlumno);
         System.out.println("Se creó un nuevo alumno");
         return new ResponseEntity<>(nuevoAlumno, HttpStatus.CREATED);
-
     }
 
-    // PUT /alumnos/{id} - actualizar un alumno existente
+    // ✅ PUT /alumnos/{id} - actualizar un alumno existente
     @PutMapping("/alumnos/{id}")
     public ResponseEntity<?> updateAlumno(@PathVariable int id, @RequestBody Alumno alumnoActualizado) {
         Optional<Alumno> alumnoOpt = alumnos.stream()
@@ -81,10 +79,10 @@ public class AlumnoController {
         alumno.setApellidos(alumnoActualizado.getApellidos());
         alumno.setHorasClase(alumnoActualizado.getHorasClase());
 
-        return new ResponseEntity<>(alumno, HttpStatus.CREATED);
+        return new ResponseEntity<>(alumno, HttpStatus.OK); // ✅ Fixed: Changed from CREATED to OK
     }
 
-    //  DELETE /alumnos/{id} - eliminar un alumno
+    // ✅ DELETE /alumnos/{id} - eliminar un alumno
     @DeleteMapping("/alumnos/{id}")
     public ResponseEntity<?> deleteAlumno(@PathVariable int id) {
         Optional<Alumno> alumnoOpt = alumnos.stream()
