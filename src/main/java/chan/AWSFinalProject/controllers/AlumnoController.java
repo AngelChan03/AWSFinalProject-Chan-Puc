@@ -81,7 +81,7 @@ public class AlumnoController {
         alumno.setApellidos(alumnoActualizado.getApellidos());
         alumno.setHorasClase(alumnoActualizado.getHorasClase());
 
-        return new ResponseEntity<>(alumno, HttpStatus.OK);
+        return new ResponseEntity<>(alumno, HttpStatus.CREATED);
     }
 
     //  DELETE /alumnos/{id} - eliminar un alumno
