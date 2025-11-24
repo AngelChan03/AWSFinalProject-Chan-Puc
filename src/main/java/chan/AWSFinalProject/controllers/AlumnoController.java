@@ -10,32 +10,34 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/alumnos") // <--- ¡AQUÍ ESTÁ EL TRUCO!
 public class AlumnoController {
 
     private List<Alumno> alumnos = new ArrayList<>();
 
-    // ✅ GET /alumnos - obtener todos los alumnos
+    // Esto ahora genera la ruta: /alumnos/alumnos
     @GetMapping("/alumnos")
     public ResponseEntity<List<Alumno>> getAllAlumnos() {
         return new ResponseEntity<>(alumnos, HttpStatus.OK);
     }
 
-    // ✅ GET /alumnos/{id} - obtener un alumno por ID
+    // Esto ahora genera la ruta: /alumnos/alumnos/{id}
     @GetMapping("/alumnos/{id}")
     public ResponseEntity<?> getAlumnoById(@PathVariable int id) {
         Optional<Alumno> alumno = alumnos.stream()
                 .filter(a -> a.getId() == id)
                 .findFirst();
 
-        return alumno.<ResponseEntity<?>>map(value ->
-                        new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND));
+        if (alumno.isPresent()) {
+            return new ResponseEntity<>(alumno.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
+        }
     }
 
-    // ✅ POST /alumnos - crear alumno
+    // Esto ahora genera la ruta: /alumnos/alumnos
     @PostMapping("/alumnos")
     public ResponseEntity<?> createAlumno(@RequestBody Alumno nuevoAlumno) {
-
         // Validaciones
         if (nuevoAlumno.getId() <= 0)
             return new ResponseEntity<>("El ID debe ser un número positivo", HttpStatus.BAD_REQUEST);
@@ -46,11 +48,9 @@ public class AlumnoController {
         if (isNullOrEmpty(nuevoAlumno.getMatricula()))
             return new ResponseEntity<>("La matrícula no puede estar vacía", HttpStatus.BAD_REQUEST);
 
-        // ⚠️ CORRECCIÓN: El promedio debe estar entre 0 y 1 (no 0 y 10)
         if (nuevoAlumno.getPromedio() < 0 || nuevoAlumno.getPromedio() > 1)
             return new ResponseEntity<>("El promedio debe estar entre 0 y 1", HttpStatus.BAD_REQUEST);
 
-        // ID duplicado
         boolean exists = alumnos.stream().anyMatch(a -> a.getId() == nuevoAlumno.getId());
         if (exists)
             return new ResponseEntity<>("Ya existe un alumno con ese ID", HttpStatus.BAD_REQUEST);
@@ -59,7 +59,7 @@ public class AlumnoController {
         return new ResponseEntity<>(nuevoAlumno, HttpStatus.CREATED);
     }
 
-    // ✅ PUT /alumnos/{id} - actualizar alumno
+    // Esto ahora genera la ruta: /alumnos/alumnos/{id}
     @PutMapping("/alumnos/{id}")
     public ResponseEntity<?> updateAlumno(@PathVariable int id, @RequestBody Alumno alumnoActualizado) {
         Optional<Alumno> alumnoOpt = alumnos.stream()
@@ -71,28 +71,24 @@ public class AlumnoController {
 
         Alumno alumno = alumnoOpt.get();
 
-        // Validaciones
         if (isNullOrEmpty(alumnoActualizado.getNombres()) || isNullOrEmpty(alumnoActualizado.getApellidos()))
             return new ResponseEntity<>("Los nombres y apellidos no pueden estar vacíos", HttpStatus.BAD_REQUEST);
 
         if (isNullOrEmpty(alumnoActualizado.getMatricula()))
             return new ResponseEntity<>("La matrícula no puede estar vacía", HttpStatus.BAD_REQUEST);
 
-        // ⚠️ CORRECCIÓN: El promedio debe estar entre 0 y 1 (no 0 y 10)
         if (alumnoActualizado.getPromedio() < 0 || alumnoActualizado.getPromedio() > 1)
             return new ResponseEntity<>("El promedio debe estar entre 0 y 1", HttpStatus.BAD_REQUEST);
 
-        // Actualizar datos
         alumno.setNombres(alumnoActualizado.getNombres());
         alumno.setApellidos(alumnoActualizado.getApellidos());
-        alumno.setHorasClase(alumnoActualizado.getHorasClase());
         alumno.setMatricula(alumnoActualizado.getMatricula());
         alumno.setPromedio(alumnoActualizado.getPromedio());
 
         return new ResponseEntity<>(alumno, HttpStatus.OK);
     }
 
-    // ✅ DELETE /alumnos/{id}
+    // Esto ahora genera la ruta: /alumnos/alumnos/{id}
     @DeleteMapping("/alumnos/{id}")
     public ResponseEntity<?> deleteAlumno(@PathVariable int id) {
         Optional<Alumno> alumnoOpt = alumnos.stream()
@@ -106,7 +102,6 @@ public class AlumnoController {
         return new ResponseEntity<>("Alumno eliminado correctamente", HttpStatus.OK);
     }
 
-    // Helper
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
     }
