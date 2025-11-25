@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
 public class ProfesorController {
 
     private final List<Profesor> profesores = new ArrayList<>();

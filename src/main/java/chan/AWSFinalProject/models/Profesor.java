@@ -7,6 +7,10 @@ public class Profesor {
     private String apellidos;
     private int horasClase;
 
+    // Constructor por defecto necesario para Spring/Jackson
+    public Profesor() {
+    }
+
     public Profesor(int id, String nombres, int numeroEmpleado, String apellidos, int horasClase) {
         this.id = id;
         this.nombres = nombres;

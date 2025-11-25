@@ -8,7 +8,9 @@ public class Alumno {
     private double promedio;
     private int horasClase;
 
-
+    // Constructor por defecto necesario para Spring/Jackson
+    public Alumno() {
+    }
 
     public int getId() {
         return id;
