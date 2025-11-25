@@ -1,6 +1,7 @@
 package chan.AWSFinalProject.controllers;
 
 import chan.AWSFinalProject.models.Alumno;
+import chan.AWSFinalProject.models.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,10 @@ public class AlumnoController {
         if (alumno.isPresent()) {
             return new ResponseEntity<>(alumno.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Alumno no encontrado", 404),
+                    HttpStatus.NOT_FOUND
+            );
         }
     }
 
@@ -40,22 +44,37 @@ public class AlumnoController {
 
         // Validaciones
         if (nuevoAlumno.getId() <= 0)
-            return new ResponseEntity<>("El ID debe ser un número positivo", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("El ID debe ser un número positivo", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         if (isNullOrEmpty(nuevoAlumno.getNombres()) || isNullOrEmpty(nuevoAlumno.getApellidos()))
-            return new ResponseEntity<>("Los nombres y apellidos no pueden estar vacíos", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Los nombres y apellidos no pueden estar vacíos", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         if (isNullOrEmpty(nuevoAlumno.getMatricula()))
-            return new ResponseEntity<>("La matrícula no puede estar vacía", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("La matrícula no puede estar vacía", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         // Promedio entre 0 y 1
         if (nuevoAlumno.getPromedio() < 0 || nuevoAlumno.getPromedio() > 1)
-            return new ResponseEntity<>("El promedio debe estar entre 0 y 1", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("El promedio debe estar entre 0 y 1", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         // ID duplicado
         boolean exists = alumnos.stream().anyMatch(a -> a.getId() == nuevoAlumno.getId());
         if (exists)
-            return new ResponseEntity<>("Ya existe un alumno con ese ID", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Ya existe un alumno con ese ID", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         alumnos.add(nuevoAlumno);
         return new ResponseEntity<>(nuevoAlumno, HttpStatus.CREATED);
@@ -70,19 +89,31 @@ public class AlumnoController {
                 .findFirst();
 
         if (!alumnoOpt.isPresent())
-            return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Alumno no encontrado", 404),
+                    HttpStatus.NOT_FOUND
+            );
 
         Alumno alumno = alumnoOpt.get();
 
         // Validaciones
         if (isNullOrEmpty(alumnoActualizado.getNombres()) || isNullOrEmpty(alumnoActualizado.getApellidos()))
-            return new ResponseEntity<>("Los nombres y apellidos no pueden estar vacíos", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Los nombres y apellidos no pueden estar vacíos", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         if (isNullOrEmpty(alumnoActualizado.getMatricula()))
-            return new ResponseEntity<>("La matrícula no puede estar vacía", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("La matrícula no puede estar vacía", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         if (alumnoActualizado.getPromedio() < 0 || alumnoActualizado.getPromedio() > 1)
-            return new ResponseEntity<>("El promedio debe estar entre 0 y 1", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    new ErrorResponse("El promedio debe estar entre 0 y 1", 400),
+                    HttpStatus.BAD_REQUEST
+            );
 
         // Actualizar datos
         alumno.setNombres(alumnoActualizado.getNombres());
@@ -102,10 +133,16 @@ public class AlumnoController {
                 .findFirst();
 
         if (!alumnoOpt.isPresent())
-            return new ResponseEntity<>("Alumno no encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                    new ErrorResponse("Alumno no encontrado", 404),
+                    HttpStatus.NOT_FOUND
+            );
 
         alumnos.remove(alumnoOpt.get());
-        return new ResponseEntity<>("Alumno eliminado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(
+                new ErrorResponse("Alumno eliminado correctamente", 200),
+                HttpStatus.OK
+        );
     }
 
     // Helper
