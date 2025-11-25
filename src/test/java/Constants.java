@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Constants {
 
-    public static String URL = "http://localhost:8081";
+    public static String URL = "http://localhost:8080";
     public static Random random;
 
     static {
